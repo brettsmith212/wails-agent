@@ -32,12 +32,9 @@ func NewAgent(
 func (a *Agent) Run(ctx context.Context) error {
 	conversation := []anthropic.MessageParam{}
 
-	fmt.Println("Chat with Claude (use 'ctrl-c' to quit)")
-
 	readUserInput := true
 	for {
 		if readUserInput {
-			fmt.Print("\u001b[94mYou\u001b[0m: ")
 			userInput, ok := a.GetUserMessage()
 			if !ok {
 				break
@@ -58,7 +55,6 @@ func (a *Agent) Run(ctx context.Context) error {
 		for _, content := range message.Content {
 			switch content.Type {
 			case "text":
-				fmt.Printf("\u001b[93mClaude\u001b[0m: %s\n", content.Text)
 				logger.LogMessage("Claude", content.Text)
 			case "tool_use":
 				result := a.executeTool(content.ID, content.Name, content.Input)
@@ -94,7 +90,7 @@ func (a *Agent) executeTool(id, name string, input json.RawMessage) anthropic.Co
 	if !found {
 		return anthropic.NewToolResultBlock(id, "tool not found", true)
 	}
-	fmt.Printf("\u001b[92mtool\u001b[0m: %s(%s)\n", name, input)
+	logger.LogMessage("Claude", fmt.Sprintf("tool: %s(%s)", name, input))
 	response, err := toolDef.Function(input)
 	if err != nil {
 		return anthropic.NewToolResultBlock(id, err.Error(), true)
