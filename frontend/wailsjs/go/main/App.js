@@ -6,10 +6,6 @@ export function GetMessages() {
   return window['go']['main']['App']['GetMessages']();
 }
 
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}
-
 export function SendMessage(arg1) {
   return window['go']['main']['App']['SendMessage'](arg1);
 }

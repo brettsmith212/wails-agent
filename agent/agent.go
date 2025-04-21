@@ -76,6 +76,11 @@ func (a *Agent) Run(ctx context.Context) error {
 	return nil
 }
 
+// ExecuteTool - Exported version for use in app.go
+func (a *Agent) ExecuteTool(id, name string, input json.RawMessage) anthropic.ContentBlockParamUnion {
+	return a.executeTool(id, name, input)
+}
+
 func (a *Agent) executeTool(id, name string, input json.RawMessage) anthropic.ContentBlockParamUnion {
 	var toolDef tools.ToolDefinition
 	var found bool
@@ -95,6 +100,21 @@ func (a *Agent) executeTool(id, name string, input json.RawMessage) anthropic.Co
 		return anthropic.NewToolResultBlock(id, err.Error(), true)
 	}
 	return anthropic.NewToolResultBlock(id, response, false)
+}
+
+// ToolsParam returns the tools in the format needed by the Anthropic API
+func (a *Agent) ToolsParam() []anthropic.ToolUnionParam {
+	anthropicTools := []anthropic.ToolUnionParam{}
+	for _, tool := range a.Tools {
+		anthropicTools = append(anthropicTools, anthropic.ToolUnionParam{
+			OfTool: &anthropic.ToolParam{
+				Name:        tool.Name,
+				Description: anthropic.String(tool.Description),
+				InputSchema: tool.InputSchema,
+			},
+		})
+	}
+	return anthropicTools
 }
 
 func (a *Agent) runInference(ctx context.Context, conversation []anthropic.MessageParam) (*anthropic.Message, error) {

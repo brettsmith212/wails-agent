@@ -4,6 +4,4 @@ import {main} from '../models';
 
 export function GetMessages():Promise<Array<main.Message>>;
 
-export function Greet(arg1:string):Promise<string>;
-
 export function SendMessage(arg1:string):Promise<string>;
