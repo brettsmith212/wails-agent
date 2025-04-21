@@ -22,15 +22,15 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:            "AI Agent",
-		Width:            1200,
-		Height:           800,
-		MinWidth:         800,
-		MinHeight:        600,
-		MaxWidth:         1920,
-		MaxHeight:        1080,
-		DisableResize:    false,
-		Fullscreen:       false,
+		Title:         "AI Agent",
+		Width:         1200,
+		Height:        800,
+		MinWidth:      800,
+		MinHeight:     600,
+		MaxWidth:      1920,
+		MaxHeight:     1080,
+		DisableResize: false,
+		Fullscreen:    false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -58,7 +58,7 @@ func main() {
 			},
 		},
 		Linux: &linux.Options{
-			WebviewGpuPolicy: linux.WebviewGpuPolicyAlways,
+			WebviewGpuPolicy:    linux.WebviewGpuPolicyAlways,
 			WindowIsTranslucent: false,
 		},
 	})
@@ -67,51 +67,3 @@ func main() {
 		println("Error:", err.Error())
 	}
 }
-
-// package main
-
-// import (
-// 	"bufio"
-// 	"context"
-// 	"fmt"
-// 	"log"
-// 	"os"
-// 	"path/filepath"
-
-// 	"github.com/anthropics/anthropic-sdk-go"
-
-// 	"wails-agent/agent"
-// 	"wails-agent/logger"
-// 	"wails-agent/tools"
-// )
-
-// func main() {
-// 	// Initialize logger
-// 	logDir := filepath.Join(".", "logs")
-// 	if err := logger.Initialize(logDir); err != nil {
-// 		log.Fatal("Failed to initialize logger:", err)
-// 	}
-// 	defer logger.Close()
-
-// 	client := anthropic.NewClient()
-
-// 	scanner := bufio.NewScanner(os.Stdin)
-// 	getUserMessage := func() (string, bool) {
-// 		if !scanner.Scan() {
-// 			return "", false
-// 		}
-// 		return scanner.Text(), true
-// 	}
-
-// 	toolDefs := []tools.ToolDefinition{
-// 		tools.ReadFileDefinition,
-// 		tools.ListFilesDefinition,
-// 		tools.EditFileDefinition,
-// 		tools.RunShellCommandDefinition,
-// 	}
-// 	myAgent := agent.NewAgent(&client, getUserMessage, toolDefs)
-// 	err := myAgent.Run(context.TODO())
-// 	if err != nil {
-// 		fmt.Printf("Error: %s\n", err.Error())
-// 	}
-// }
