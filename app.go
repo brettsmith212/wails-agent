@@ -84,6 +84,9 @@ func (a *App) SendMessage(userText string) (string, error) {
 			return "", err
 		}
 
+		// --- NEW: record the assistant reply (contains any tool_use blocks) ---
+		conv = append(conv, resp.ToParam())
+
 		didTool := false
 		var textBuf string
 
