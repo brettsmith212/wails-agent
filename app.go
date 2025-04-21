@@ -60,7 +60,9 @@ func (a *App) startup(ctx context.Context) {
 
 // SendMessage handles a complete user message, including all tool calls
 func (a *App) SendMessage(userText string) (string, error) {
-	// Append user message
+	// ---- Log and store user message ----
+	logger.LogMessage("User", userText)
+
 	a.mutex.Lock()
 	a.messages = append(a.messages, Message{Role: "user", Content: userText})
 	a.mutex.Unlock()
@@ -84,7 +86,7 @@ func (a *App) SendMessage(userText string) (string, error) {
 			return "", err
 		}
 
-		// --- NEW: record the assistant reply (contains any tool_use blocks) ---
+		// Record assistant reply (may include tool_use blocks)
 		conv = append(conv, resp.ToParam())
 
 		didTool := false
@@ -108,6 +110,9 @@ func (a *App) SendMessage(userText string) (string, error) {
 		}
 
 		if !didTool {
+			// ---- Log Claude's finished reply ----
+			logger.LogMessage("Claude", textBuf)
+
 			finalReply = textBuf
 			break
 		}
